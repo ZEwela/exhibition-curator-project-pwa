@@ -1,0 +1,22 @@
+{
+  "name": "Exhibition Curator Project PWA",
+  "short_name": "Exhibition Curator",
+  "description": "A viewer-driven virtual exhibition platform combining catalogs from museums and universities, built as a Progressive Web App using Next.js",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/web-app-manifest-512x512",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
