@@ -118,6 +118,9 @@ const Gallery: React.FC<GalleryProps> = ({ artworks }) => {
               <strong>Medium:</strong> {selectedArt.medium}
             </p>
             <p>
+              <strong>Type:</strong> {selectedArt.type}
+            </p>
+            <p>
               <strong>Date:</strong> {selectedArt.date}
             </p>
             <p>
@@ -133,7 +136,15 @@ const Gallery: React.FC<GalleryProps> = ({ artworks }) => {
               <strong>Description:</strong> {selectedArt.description}
             </p>
             <p>
-              <strong>Source:</strong> {selectedArt.source}
+              <strong>Source:</strong> {selectedArt.source} {""}
+              <a
+                href={selectedArt.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.externalLink}
+              >
+                Check details
+              </a>
             </p>
           </div>
         </Modal>

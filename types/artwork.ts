@@ -11,14 +11,16 @@ export interface NormalizedArtwork {
   location: string | null;
   creditline: string | null;
   description?: string;
+  type: string;
   source: string;
+  source_url: string;
 }
 
 export interface ClevelandArtResponse {
   id: number;
   title: string;
   creation_date: string;
-  artists_tags: string[];
+  creators: [{ description: string }];
   technique: string;
   dimensions: {
     framed?: {
@@ -35,7 +37,10 @@ export interface ClevelandArtResponse {
   culture: string[];
   current_location: string;
   tombstone: string;
-  image_url?: string;
+  description: string;
+  type: string;
+  images?: { web?: { url?: string } };
+  url: string;
 }
 
 export interface HarvardArtResponse {
@@ -54,4 +59,5 @@ export interface HarvardArtResponse {
   primaryimageurl: string | null;
   creditline: string | null;
   description?: string | null;
+  url: string;
 }

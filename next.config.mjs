@@ -11,6 +11,11 @@ const nextConfig = {
         hostname: "nrs.harvard.edu",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "openaccess-cdn.clevelandart.org",
+        pathname: "/**",
+      },
     ],
   },
 };

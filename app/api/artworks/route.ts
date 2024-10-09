@@ -15,15 +15,20 @@ const CLEVELAND_API_URL =
 const HARVARD_API_URL = "https://api.harvardartmuseums.org/object";
 const HARVARD_API_KEY = process.env.HARVARD_ART_MUSEUMS_API;
 
+const ARTWORKS_PER_PAGE = 20;
+
 /**
  * Fetch artworks from Cleveland Art API
  * @returns Promise<NormalizedArtwork[]>
  */
-const fetchClevelandArtworks = async (): Promise<NormalizedArtwork[]> => {
+const fetchClevelandArtworks = async (
+  page: number
+): Promise<{ artworks: NormalizedArtwork[]; total: number }> => {
   try {
     const response = await axios.get(CLEVELAND_API_URL, {
       params: {
-        limit: 20,
+        limit: ARTWORKS_PER_PAGE,
+        skip: (page - 1) * ARTWORKS_PER_PAGE,
       },
     });
 
@@ -31,10 +36,13 @@ const fetchClevelandArtworks = async (): Promise<NormalizedArtwork[]> => {
       .map((item: ClevelandArtResponse) => normalizeClevelandArt(item))
       .filter((art: NormalizedArtwork | null) => art !== null);
 
-    return artworks;
+    return {
+      artworks,
+      total: response.data.info.total,
+    };
   } catch (error) {
     console.error("Error fetching Cleveland artworks:", error);
-    return [];
+    return { artworks: [], total: 0 };
   }
 };
 
@@ -42,12 +50,15 @@ const fetchClevelandArtworks = async (): Promise<NormalizedArtwork[]> => {
  * Fetch artworks from Harvard Art Museums API
  * @returns Promise<NormalizedArtwork[]>
  */
-const fetchHarvardArtworks = async (): Promise<NormalizedArtwork[]> => {
+const fetchHarvardArtworks = async (
+  page: number
+): Promise<{ artworks: NormalizedArtwork[]; total: number }> => {
   try {
     const response = await axios.get(HARVARD_API_URL, {
       params: {
         apikey: HARVARD_API_KEY,
-        size: 20,
+        size: ARTWORKS_PER_PAGE,
+        page: page,
       },
     });
 
@@ -55,10 +66,13 @@ const fetchHarvardArtworks = async (): Promise<NormalizedArtwork[]> => {
       .map((record: HarvardArtResponse) => normalizeHarvardArt(record))
       .filter((art: NormalizedArtwork | null) => art !== null);
 
-    return artworks;
+    return {
+      artworks,
+      total: response.data.info.totalrecords,
+    };
   } catch (error) {
     console.error("Error fetching Harvard artworks:", error);
-    return [];
+    return { artworks: [], total: 0 };
   }
 };
 
@@ -66,25 +80,45 @@ const fetchHarvardArtworks = async (): Promise<NormalizedArtwork[]> => {
  * Fetch and combine artworks from both APIs
  * @returns Promise<NormalizedArtwork[]>
  */
-const fetchCombinedArtworks = async (): Promise<NormalizedArtwork[]> => {
-  const [clevelandArt, harvardArt] = await Promise.all([
-    fetchClevelandArtworks(),
-    fetchHarvardArtworks(),
+const fetchCombinedArtworks = async (
+  page: number
+): Promise<{ artworks: NormalizedArtwork[]; total: number }> => {
+  const [clevelandResponse, harvardResponse] = await Promise.all([
+    fetchClevelandArtworks(page),
+    fetchHarvardArtworks(page),
   ]);
 
-  return [...clevelandArt, ...harvardArt];
+  const combinedArtworks = [
+    ...clevelandResponse.artworks,
+    ...harvardResponse.artworks,
+  ];
+
+  const total = clevelandResponse.total + harvardResponse.total;
+
+  return { artworks: combinedArtworks, total };
 };
 
-export async function GET() {
-  try {
-    const artworks = await fetchCombinedArtworks();
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const page = Number(url.searchParams.get("page"));
 
-    return NextResponse.json(artworks, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
+  try {
+    const { artworks, total } = await fetchCombinedArtworks(page);
+    const totalPages = Math.ceil(total / ARTWORKS_PER_PAGE);
+
+    return NextResponse.json(
+      {
+        artworks,
+        total,
+        totalPages,
       },
-    });
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   } catch (error) {
     console.error("Error fetching artworks:", error);
     return NextResponse.json(

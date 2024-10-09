@@ -10,6 +10,12 @@ import styles from "./gallery.module.css";
 
 const ITEMS_PER_PAGE = 20;
 
+interface ApiResponse {
+  artworks: NormalizedArtwork[];
+  total: number;
+  totalPages: number;
+}
+
 const GalleryPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>("");
@@ -17,6 +23,7 @@ const GalleryPage: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [artworks, setArtworks] = useState<NormalizedArtwork[]>([]);
+  const [totalArtworks, setTotalArtworks] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,12 +50,14 @@ const GalleryPage: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch("/api/artworks");
+        const response = await fetch(`/api/artworks?page=${currentPage}`);
         if (!response.ok) {
           throw new Error(`Error ${response.status}: ${response.statusText}`);
         }
-        const data: NormalizedArtwork[] = await response.json();
-        setArtworks(data);
+        const data: ApiResponse = await response.json();
+        setArtworks(data.artworks);
+        console.log(data.artworks);
+        setTotalArtworks(data.total);
       } catch (err) {
         if (err instanceof Error) {
           console.error("Error fetching artworks:", err);
@@ -63,7 +72,7 @@ const GalleryPage: React.FC = () => {
     };
 
     fetchArtworks();
-  }, []);
+  }, [currentPage]);
 
   // Parse creation date string to a sortable number (e.g., year)
   // Handles various formats like "c. 1765", "1925-1935"
@@ -112,7 +121,7 @@ const GalleryPage: React.FC = () => {
   }, [artworks, debouncedSearch, filterMedium, sortOrder]);
 
   // Pagination calculations
-  const totalPages = Math.ceil(filteredArtworks.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(totalArtworks / ITEMS_PER_PAGE);
   const paginatedArtworks = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     return filteredArtworks.slice(start, start + ITEMS_PER_PAGE);
@@ -156,7 +165,7 @@ const GalleryPage: React.FC = () => {
         </select>
       </div>
 
-      <Gallery artworks={paginatedArtworks} />
+      <Gallery artworks={artworks} />
 
       <Pagination
         currentPage={currentPage}
