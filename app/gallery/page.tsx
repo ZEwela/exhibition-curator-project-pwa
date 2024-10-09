@@ -122,10 +122,6 @@ const GalleryPage: React.FC = () => {
 
   // Pagination calculations
   const totalPages = Math.ceil(totalArtworks / ITEMS_PER_PAGE);
-  const paginatedArtworks = useMemo(() => {
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredArtworks.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredArtworks, currentPage]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -165,7 +161,7 @@ const GalleryPage: React.FC = () => {
         </select>
       </div>
 
-      <Gallery artworks={artworks} />
+      <Gallery artworks={filteredArtworks} />
 
       <Pagination
         currentPage={currentPage}
