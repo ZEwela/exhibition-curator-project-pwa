@@ -11,7 +11,7 @@ export interface NormalizedArtwork {
   location: string | null;
   creditline: string | null;
   description?: string;
-  source: string; // Indicates the API source
+  source: string;
 }
 
 export interface ClevelandArtResponse {
@@ -35,7 +35,7 @@ export interface ClevelandArtResponse {
   culture: string[];
   current_location: string;
   tombstone: string;
-  image_url?: string; // Assuming Cleveland API provides image URLs
+  image_url?: string;
 }
 
 export interface HarvardArtResponse {

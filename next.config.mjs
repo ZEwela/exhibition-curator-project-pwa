@@ -4,7 +4,15 @@ import withPWA from "next-pwa";
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: false,
-  // Add other Next.js configurations here
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "nrs.harvard.edu",
+        pathname: "/**",
+      },
+    ],
+  },
 };
 
 const pwaConfig = {

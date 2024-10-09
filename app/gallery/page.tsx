@@ -1,10 +1,7 @@
-// app/gallery/page.tsx
-
 "use client";
 
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import debounce from "lodash.debounce";
-import { useRouter } from "next/navigation";
 
 import { NormalizedArtwork } from "../../types/artwork";
 import Gallery from "../../components/gallery";
@@ -14,7 +11,6 @@ import styles from "./gallery.module.css";
 const ITEMS_PER_PAGE = 20;
 
 const GalleryPage: React.FC = () => {
-  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>("");
   const [filterMedium, setFilterMedium] = useState<string>("");
@@ -24,28 +20,28 @@ const GalleryPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Debounce search input
-  const debounceSearch = useCallback(
-    debounce((term: string) => setDebouncedSearch(term), 300),
-    []
-  );
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-    debounceSearch(e.target.value);
+    setDebouncedSearch(e.target.value);
   };
 
   useEffect(() => {
+    // Debounce search input
+    const debouncedFunc = debounce((term: string) => {
+      setDebouncedSearch(term);
+    }, 300);
+
+    debouncedFunc(searchTerm);
     return () => {
-      debounceSearch.cancel(); // Clean up the debounce on unmount
+      debouncedFunc.cancel();
     };
-  }, [debounceSearch]);
+  }, [searchTerm]);
 
   // Fetch artworks on client side
   useEffect(() => {
     const fetchArtworks = async () => {
       setLoading(true);
-      setError(null); // Reset error state before fetching
+      setError(null);
       try {
         const response = await fetch("/api/artworks");
         if (!response.ok) {
@@ -53,16 +49,21 @@ const GalleryPage: React.FC = () => {
         }
         const data: NormalizedArtwork[] = await response.json();
         setArtworks(data);
-      } catch (err: any) {
-        console.error("Error fetching artworks:", err);
-        setError(err.message || "Failed to fetch artworks.");
+      } catch (err) {
+        if (err instanceof Error) {
+          console.error("Error fetching artworks:", err);
+          setError(err.message);
+        } else {
+          console.error("Unknown error fetching artworks:", err);
+          setError("Failed to fetch artworks.");
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchArtworks();
-  }, []); // Empty dependency array means this runs once when the component mounts
+  }, []);
 
   // Parse creation date string to a sortable number (e.g., year)
   // Handles various formats like "c. 1765", "1925-1935"

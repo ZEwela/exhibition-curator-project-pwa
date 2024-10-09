@@ -1,15 +1,19 @@
 // app/api/artworks/route.ts
 
 import { normalizeClevelandArt, normalizeHarvardArt } from "@/lib/normalize";
-import { NormalizedArtwork } from "@/types/artwork";
+import {
+  ClevelandArtResponse,
+  HarvardArtResponse,
+  NormalizedArtwork,
+} from "@/types/artwork";
 import axios from "axios";
 import { NextResponse } from "next/server";
 
 // API Endpoints and Keys
 const CLEVELAND_API_URL =
-  "https://openaccess-api.clevelandart.org/api/artworks"; // Replace with actual URL
+  "https://openaccess-api.clevelandart.org/api/artworks";
 const HARVARD_API_URL = "https://api.harvardartmuseums.org/object";
-const HARVARD_API_KEY = process.env.HARVARD_API_KEY; // Ensure this is set in .env.local
+const HARVARD_API_KEY = process.env.HARVARD_ART_MUSEUMS_API;
 
 /**
  * Fetch artworks from Cleveland Art API
@@ -24,7 +28,7 @@ const fetchClevelandArtworks = async (): Promise<NormalizedArtwork[]> => {
     });
 
     const artworks = response.data.data
-      .map((item: any) => normalizeClevelandArt(item))
+      .map((item: ClevelandArtResponse) => normalizeClevelandArt(item))
       .filter((art: NormalizedArtwork | null) => art !== null);
 
     return artworks;
@@ -48,13 +52,13 @@ const fetchHarvardArtworks = async (): Promise<NormalizedArtwork[]> => {
     });
 
     const artworks = response.data.records
-      .map((record: any) => normalizeHarvardArt(record))
+      .map((record: HarvardArtResponse) => normalizeHarvardArt(record))
       .filter((art: NormalizedArtwork | null) => art !== null);
 
     return artworks;
   } catch (error) {
     console.error("Error fetching Harvard artworks:", error);
-    return []; // Return empty array on error
+    return [];
   }
 };
 

@@ -1,5 +1,3 @@
-// lib/normalize.ts
-
 import {
   NormalizedArtwork,
   ClevelandArtResponse,

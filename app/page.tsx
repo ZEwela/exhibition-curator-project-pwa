@@ -1,8 +1,7 @@
 "use client";
 import { Chip } from "@/components/chip";
-import useSWR from "swr";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const exhibitionCategories = [
   "Contemporary Art",
@@ -24,22 +23,9 @@ const exhibitionCategories = [
   "Performance Art",
 ];
 
-const fetcher = async (...args: Parameters<typeof fetch>) => {
-  const res = await fetch(...args);
-  if (!res.ok) {
-    const errorDetails = await res.text();
-    throw new Error(`Error ${res.status}: ${res.statusText} - ${errorDetails}`);
-  }
-  return res.json();
-};
-
 export default function Home() {
   const router = useRouter();
   const [preferences, setPreferences] = useState<string[]>([]);
-
-  const { data, error, isLoading } = useSWR("/api/harvard", fetcher);
-  console.log("hey");
-  console.log(data);
 
   const handleChipClick = (label: string, selected: boolean) => {
     setPreferences((prev) =>

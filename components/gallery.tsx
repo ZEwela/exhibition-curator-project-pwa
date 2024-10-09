@@ -16,7 +16,6 @@ const Gallery: React.FC<GalleryProps> = ({ artworks }) => {
   );
 
   useEffect(() => {
-    // Ensure that the __next element exists before setting it as the app element
     const appElement = document.getElementById("__next");
     if (appElement) {
       Modal.setAppElement(appElement);
@@ -54,7 +53,6 @@ const Gallery: React.FC<GalleryProps> = ({ artworks }) => {
                 alt={art.title}
                 width={300}
                 height={300}
-                objectFit="cover"
                 className={styles.image}
                 placeholder="blur"
                 blurDataURL="/placeholder.png" // Use a low-res placeholder
@@ -65,7 +63,6 @@ const Gallery: React.FC<GalleryProps> = ({ artworks }) => {
                 alt="Placeholder"
                 width={300}
                 height={300}
-                objectFit="cover"
                 className={styles.image}
               />
             )}
@@ -104,7 +101,6 @@ const Gallery: React.FC<GalleryProps> = ({ artworks }) => {
                 alt={selectedArt.title}
                 width={600}
                 height={600}
-                objectFit="contain"
               />
             ) : (
               <Image
@@ -112,7 +108,6 @@ const Gallery: React.FC<GalleryProps> = ({ artworks }) => {
                 alt="Placeholder"
                 width={600}
                 height={600}
-                objectFit="contain"
               />
             )}
             <h2>{selectedArt.title}</h2>
