@@ -17,6 +17,27 @@ export const metadata: Metadata = {
   title: "Exhibition Curator",
   description:
     "A viewer-driven virtual exhibition platform combining catalogs from museums and universities, built as a Progressive Web App using Next.js",
+  manifest: "/manifest.json",
+  icons: [
+    {
+      rel: "icon",
+      url: "/favicon.ico",
+    },
+    {
+      rel: "apple-touch-icon",
+      url: "/web-app-manifest-192x192.png",
+    },
+    {
+      rel: "icon",
+      url: "/web-app-manifest-512x512.png",
+      sizes: "512x512",
+    },
+    {
+      rel: "icon",
+      url: "/web-app-manifest-192x192.png",
+      sizes: "192x192",
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -26,10 +47,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="manifest" href="/manifest.json" />
-        <link rel="apple-touch-icon" href="/icon-192x192.png" />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

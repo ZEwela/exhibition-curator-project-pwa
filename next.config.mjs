@@ -12,6 +12,7 @@ const pwaConfig = {
   disable: process.env.NODE_ENV === "development",
   register: true,
   skipWaiting: true,
+  swSrc: "service-worker.js",
 };
 
 export default withPWA(pwaConfig)(nextConfig);
