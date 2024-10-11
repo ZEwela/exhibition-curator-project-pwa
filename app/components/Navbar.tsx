@@ -28,6 +28,12 @@ const Navbar = () => {
         >
           Gallery
         </Link>
+        <Link
+          href="/exhibition"
+          className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+        >
+          Exhibition
+        </Link>
         <ThemeToggle />
       </div>
     </nav>

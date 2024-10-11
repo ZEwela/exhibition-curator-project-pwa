@@ -4,6 +4,7 @@ import Image from "next/image";
 
 import Modal from "react-modal";
 import { NormalizedArtwork } from "@/types/artwork";
+import { useExhibition } from "../contexts/ExhibitionContext";
 
 interface GalleryProps {
   artworks: NormalizedArtwork[];
@@ -14,6 +15,8 @@ const Gallery: React.FC<GalleryProps> = ({ artworks }) => {
   const [selectedArt, setSelectedArt] = useState<NormalizedArtwork | null>(
     null
   );
+  const { addToExhibition, removeFromExhibition, isInExhibition } =
+    useExhibition();
 
   useEffect(() => {
     const appElement = document.getElementById("__next");
@@ -34,6 +37,14 @@ const Gallery: React.FC<GalleryProps> = ({ artworks }) => {
     setSelectedArt(null);
   };
 
+  const toggleExhibition = (art: NormalizedArtwork) => {
+    if (isInExhibition(art.id)) {
+      removeFromExhibition(art.id);
+    } else {
+      addToExhibition(art);
+    }
+  };
+
   if (!artworks.length) {
     return <p>No artworks available.</p>;
   }
@@ -45,40 +56,55 @@ const Gallery: React.FC<GalleryProps> = ({ artworks }) => {
           <div
             key={art.id}
             className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md cursor-pointer transition-transform transform hover:-translate-y-1"
-            onClick={() => openModal(art)}
           >
-            {art.image ? (
-              <Image
-                src={art.image}
-                alt={art.title}
-                width={300}
-                height={300}
-                className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105"
-                placeholder="blur"
-                blurDataURL="/placeholder.png"
-              />
-            ) : (
-              <Image
-                src="/placeholder.png"
-                alt="Placeholder"
-                width={300}
-                height={300}
-                className="w-full h-auto object-cover"
-              />
-            )}
-            <div className="p-4">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {art.title}
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                <strong>Artist:</strong> {art.artist}
-              </p>
-              <p className="text-gray-600 dark:text-gray-400">
-                <strong>Medium:</strong> {art.medium}
-              </p>
-              <p className="text-gray-600 dark:text-gray-400">
-                <strong>Date:</strong> {art.date}
-              </p>
+            <div onClick={() => openModal(art)}>
+              {art.image ? (
+                <Image
+                  src={art.image}
+                  alt={art.title}
+                  width={300}
+                  height={300}
+                  className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105"
+                  placeholder="blur"
+                  blurDataURL="/placeholder.png"
+                />
+              ) : (
+                <Image
+                  src="/placeholder.png"
+                  alt="Placeholder"
+                  width={300}
+                  height={300}
+                  className="w-full h-auto object-cover"
+                />
+              )}
+              <div className="p-4">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  {art.title}
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400">
+                  <strong>Artist:</strong> {art.artist}
+                </p>
+                <p className="text-gray-600 dark:text-gray-400">
+                  <strong>Medium:</strong> {art.medium}
+                </p>
+                <p className="text-gray-600 dark:text-gray-400">
+                  <strong>Date:</strong> {art.date}
+                </p>
+              </div>
+            </div>
+            <div className="px-4 pb-4">
+              <button
+                onClick={() => toggleExhibition(art)}
+                className={`w-full py-2 rounded transition-colors ${
+                  isInExhibition(art.id)
+                    ? "bg-red-500 hover:bg-red-600 text-white"
+                    : "bg-blue-500 hover:bg-blue-600 text-white"
+                }`}
+              >
+                {isInExhibition(art.id)
+                  ? "Remove from Exhibition"
+                  : "Add to Exhibition"}
+              </button>
             </div>
           </div>
         ))}
