@@ -1,31 +1,28 @@
 "use client";
-import { Chip } from "@/components/chip";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-
-const exhibitionCategories = [
-  "Contemporary Art",
-  "Classical Art",
-  "Photography Exhibitions",
-  "Interactive Installations",
-  "Historical Collections",
-  "Nature and Wildlife",
-  "Science and Technology",
-  "Cultural Heritage",
-  "Fashion and Textiles",
-  "Sculpture",
-  "Digital Art",
-  "Street Art",
-  "Printmaking",
-  "Mixed Media",
-  "Film and Video Art",
-  "Installation Art",
-  "Performance Art",
-];
+import { Chip } from "@/components/Chip";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const router = useRouter();
   const [preferences, setPreferences] = useState<string[]>([]);
+
+  const [classifications, setClassifications] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchClassifications = async () => {
+      try {
+        const response = await fetch("/api/classification");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data: string[] = await response.json();
+        setClassifications(data);
+      } catch (error) {
+        console.error("Error fetching classifications:", error);
+      }
+    };
+
+    fetchClassifications();
+  }, []);
 
   const handleChipClick = (label: string, selected: boolean) => {
     setPreferences((prev) =>
@@ -33,24 +30,33 @@ export default function Home() {
     );
   };
 
-  const handleNavigation = (path: string) => {
-    console.log(preferences, path);
+  const handleNavigation = () => {
+    try {
+      const queryParams = new URLSearchParams({
+        classifications: preferences.join("|"),
+      }).toString();
 
-    router.push(path);
+      window.location.href = `/gallery?${queryParams}`;
+    } catch (error) {
+      console.error("Error navigating to gallery:", error);
+    }
   };
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <h1>Exhibition Curator</h1>
-        <p>Hello You</p>
-        <div className="flex  flex-col gap-7 w-[342px] h-[512px] items-center scrollbar-hide overflow-y-scroll">
-          <div className="flex flex-col gap-7 px-4 items-start py-5 ">
-            <p className="text-body-regular">
-              Select at least 3 categories you would be interested in
+    <div className="grid grid-rows-[auto_1fr_auto] items-center justify-items-center min-h-screen p-8 pb-20 sm:p-20 gap-16 font-geist">
+      <div className="flex flex-col gap-8 items-center sm:items-start w-full max-w-md">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+          Exhibition Curator
+        </h1>
+        <p className="text-lg text-gray-600 dark:text-gray-300">Hello You</p>
+
+        <div className="flex flex-col gap-7 w-full h-[512px] items-center overflow-y-scroll scrollbar-hide">
+          <div className="flex flex-col gap-7 px-4 py-5 w-full items-start">
+            <p className="text-base text-gray-700 dark:text-gray-400">
+              Select from categories or go straight to gallery to see all works:
             </p>
             <div className="flex flex-wrap gap-2">
-              {exhibitionCategories.map((category, index) => (
+              {classifications.map((category, index) => (
                 <Chip
                   key={index}
                   label={category}
@@ -60,13 +66,14 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <button onClick={() => handleNavigation("/gallery")}>
-          Go to Some Path
+
+        <button
+          onClick={() => handleNavigation()}
+          className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 dark:bg-gray-200 dark:text-gray-800 dark:hover:bg-gray-300 transition-colors"
+        >
+          Go to Gallery
         </button>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <p>Created by Ewelina Zawol</p>
-      </footer>
+      </div>
     </div>
   );
 }

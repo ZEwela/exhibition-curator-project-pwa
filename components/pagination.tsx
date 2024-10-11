@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "./pagination.module.css";
 
 interface PaginationProps {
   currentPage: number;
@@ -14,7 +13,6 @@ const Pagination: React.FC<PaginationProps> = ({
 }) => {
   const pages = [];
 
-  // Determine range of pages to display
   const maxVisible = 5;
   let start = Math.max(currentPage - Math.floor(maxVisible / 2), 1);
   let end = start + maxVisible - 1;
@@ -29,10 +27,18 @@ const Pagination: React.FC<PaginationProps> = ({
   }
 
   return (
-    <div className={styles.pagination}>
+    <div className="flex justify-center gap-2 my-5">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
+        className={`px-3 py-2 rounded-md transition 
+        bg-gray-200 dark:bg-gray-700 
+        text-gray-700 dark:text-gray-300 
+        hover:bg-gray-300 dark:hover:bg-gray-600 
+        disabled:bg-gray-100 dark:disabled:bg-gray-800 
+        disabled:text-gray-400 dark:disabled:text-gray-500 
+        cursor-pointer disabled:cursor-not-allowed 
+        focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400`}
       >
         Previous
       </button>
@@ -41,7 +47,12 @@ const Pagination: React.FC<PaginationProps> = ({
         <button
           key={page}
           onClick={() => onPageChange(page)}
-          className={page === currentPage ? styles.active : ""}
+          className={`px-3 py-2 rounded-md transition 
+          ${
+            page === currentPage
+              ? "bg-blue-600 dark:bg-blue-500 text-white"
+              : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+          }`}
         >
           {page}
         </button>
@@ -50,6 +61,14 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
+        className={`px-3 py-2 rounded-md transition 
+        bg-gray-200 dark:bg-gray-700 
+        text-gray-700 dark:text-gray-300 
+        hover:bg-gray-300 dark:hover:bg-gray-600 
+        disabled:bg-gray-100 dark:disabled:bg-gray-800 
+        disabled:text-gray-400 dark:disabled:text-gray-500 
+        cursor-pointer disabled:cursor-not-allowed 
+        focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400`}
       >
         Next
       </button>

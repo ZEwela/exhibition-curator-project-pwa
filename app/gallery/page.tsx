@@ -1,63 +1,56 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
-import debounce from "lodash.debounce";
+import React, { useState, useEffect, Suspense } from "react";
 
 import { NormalizedArtwork } from "../../types/artwork";
-import Gallery from "../../components/gallery";
-import Pagination from "../../components/pagination";
-import styles from "./gallery.module.css";
-
-const ITEMS_PER_PAGE = 20;
+import Gallery from "../../components/Gallery";
+import Pagination from "../../components/Pagination";
+import CustomSelect, { Option } from "@/components/CustomSelect";
+import { SingleValue } from "react-select";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface ApiResponse {
   artworks: NormalizedArtwork[];
   total: number;
   totalPages: number;
+  currentPage: number;
 }
 
 const GalleryPage: React.FC = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [debouncedSearch, setDebouncedSearch] = useState<string>("");
-  const [filterMedium, setFilterMedium] = useState<string>("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [currentPage, setCurrentPage] = useState<number>(1);
   const [artworks, setArtworks] = useState<NormalizedArtwork[]>([]);
-  const [totalArtworks, setTotalArtworks] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-    setDebouncedSearch(e.target.value);
-  };
+  const page = Number(searchParams.get("page")) || 1;
+  const sortBy = (searchParams.get("sortBy") as "medium" | "date") || "date";
+  const sortOrder = (searchParams.get("sortOrder") as "asc" | "desc") || "asc";
+  const search = searchParams.get("search") || "";
 
   useEffect(() => {
-    // Debounce search input
-    const debouncedFunc = debounce((term: string) => {
-      setDebouncedSearch(term);
-    }, 300);
+    setSearchTerm(search);
+  }, [search]);
 
-    debouncedFunc(searchTerm);
-    return () => {
-      debouncedFunc.cancel();
-    };
-  }, [searchTerm]);
-
-  // Fetch artworks on client side
   useEffect(() => {
     const fetchArtworks = async () => {
       setLoading(true);
       setError(null);
+
       try {
-        const response = await fetch(`/api/artworks?page=${currentPage}`);
+        const queryParams = new URLSearchParams(searchParams);
+        const response = await fetch(`/api/artworks?${queryParams}`);
+
         if (!response.ok) {
           throw new Error(`Error ${response.status}: ${response.statusText}`);
         }
+
         const data: ApiResponse = await response.json();
         setArtworks(data.artworks);
-        console.log(data.artworks);
-        setTotalArtworks(data.total);
+        setTotalPages(data.totalPages);
       } catch (err) {
         if (err instanceof Error) {
           console.error("Error fetching artworks:", err);
@@ -72,104 +65,99 @@ const GalleryPage: React.FC = () => {
     };
 
     fetchArtworks();
-  }, [currentPage]);
+  }, [searchParams]);
 
-  // Parse creation date string to a sortable number (e.g., year)
-  // Handles various formats like "c. 1765", "1925-1935"
-  const parseDate = (dateStr: string | null): number => {
-    if (!dateStr) return 0;
-    const yearMatch = dateStr.match(/(\d{4})/);
-    return yearMatch ? parseInt(yearMatch[1], 10) : 0;
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
   };
 
-  // Extract unique mediums for filter options
-  const mediums = useMemo(() => {
-    const mediumSet = new Set<string>();
-    artworks.forEach((art) => {
-      if (art.medium) mediumSet.add(art.medium);
-    });
-    return Array.from(mediumSet).sort();
-  }, [artworks]);
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    updateQueryParams({ search: searchTerm, page: "1" });
+  };
 
-  // Filter and sort artworks
-  const filteredArtworks = useMemo(() => {
-    let filtered = artworks;
-
-    // Search by title or artist
-    if (debouncedSearch) {
-      const lowerSearch = debouncedSearch.toLowerCase();
-      filtered = filtered.filter(
-        (art) =>
-          art.title.toLowerCase().includes(lowerSearch) ||
-          art.artist.toLowerCase().includes(lowerSearch)
-      );
+  const handleSortChange = (selected: SingleValue<Option>) => {
+    if (selected) {
+      const [newSortBy, newSortOrder] = selected.value.split("-");
+      updateQueryParams({
+        sortBy: newSortBy,
+        sortOrder: newSortOrder,
+        page: "1",
+      });
     }
+  };
 
-    // Filter by medium
-    if (filterMedium) {
-      filtered = filtered.filter((art) => art.medium === filterMedium);
-    }
-
-    // Sort by creation date
-    filtered = filtered.sort((a, b) => {
-      const dateA = parseDate(a.date);
-      const dateB = parseDate(b.date);
-      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+  const updateQueryParams = (newParams: Record<string, string>) => {
+    const updatedParams = new URLSearchParams(searchParams);
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value) {
+        updatedParams.set(key, value);
+      } else {
+        updatedParams.delete(key);
+      }
     });
-
-    return filtered;
-  }, [artworks, debouncedSearch, filterMedium, sortOrder]);
-
-  // Pagination calculations
-  const totalPages = Math.ceil(totalArtworks / ITEMS_PER_PAGE);
+    router.push(`?${updatedParams.toString()}`);
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div>
-      <h1>Art Gallery</h1>
-      <div className={styles.controls}>
-        <input
-          type="text"
-          placeholder="Search by title or artist"
-          value={searchTerm}
-          onChange={handleSearchChange}
-          className={styles.searchInput}
+    <div className="flex flex-col items-center p-8">
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-8">
+        Art Gallery
+      </h1>
+
+      <div className="flex flex-wrap gap-4 justify-center mb-8 w-full">
+        <form
+          onSubmit={handleSearchSubmit}
+          className="flex-1 min-w-[250px] max-w-[400px]"
+        >
+          <input
+            type="text"
+            placeholder="Search by title or artist"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="w-full px-4 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+          />
+        </form>
+
+        <CustomSelect
+          options={[
+            { value: "date-asc", label: "Date: Ascending" },
+            { value: "date-desc", label: "Date: Descending" },
+            { value: "medium-asc", label: "Medium: A-Z" },
+            { value: "medium-desc", label: "Medium: Z-A" },
+          ]}
+          value={{
+            value: `${sortBy}-${sortOrder}`,
+            label: `${sortBy}: ${
+              sortOrder === "asc" ? "Ascending" : "Descending"
+            }`,
+          }}
+          onChange={handleSortChange}
         />
-
-        <select
-          value={filterMedium}
-          onChange={(e) => setFilterMedium(e.target.value)}
-          className={styles.select}
-        >
-          <option value="">All Mediums</option>
-          {mediums.map((medium) => (
-            <option key={medium} value={medium}>
-              {medium}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={sortOrder}
-          onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
-          className={styles.select}
-        >
-          <option value="asc">Date: Ascending</option>
-          <option value="desc">Date: Descending</option>
-        </select>
       </div>
 
-      <Gallery artworks={filteredArtworks} />
+      <Gallery artworks={artworks} />
 
       <Pagination
-        currentPage={currentPage}
+        currentPage={page}
         totalPages={totalPages}
-        onPageChange={(page) => setCurrentPage(page)}
+        onPageChange={(newPage) =>
+          updateQueryParams({ page: newPage.toString() })
+        }
       />
     </div>
   );
 };
 
-export default GalleryPage;
+const GalleryPageWithSuspense: React.FC = () => {
+  return (
+    <Suspense fallback={<div className="text-center">Loading...</div>}>
+      <GalleryPage />
+    </Suspense>
+  );
+};
+
+export default GalleryPageWithSuspense;

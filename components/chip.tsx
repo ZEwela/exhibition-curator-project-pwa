@@ -1,5 +1,6 @@
 "use client";
 import { useState, type FC } from "react";
+
 import cx from "classnames";
 interface Props {
   label: string;
@@ -26,10 +27,12 @@ export const Chip: FC<Props> = ({
   };
 
   const buttonClasses = cx(
-    "rounded-md w-fit px-2 py-1 text-body-regular border-[1px]",
+    "rounded-md w-fit px-4 py-2 text-sm font-medium transition-colors",
     selected
-      ? "bg-primary-200 border-primary-500 "
-      : "bg-white border-neutral-400  "
+      ? "bg-gray-800 text-white dark:bg-gray-200 dark:text-black"
+      : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300",
+    "hover:bg-gray-400 dark:hover:bg-gray-700",
+    className
   );
 
   return (
