@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { ThemeToggle } from "./ThemeToggle";
+
 import Image from "next/image";
+import { ThemeToggle } from "./ThemeToggle";
 
 const Navbar = () => {
   return (

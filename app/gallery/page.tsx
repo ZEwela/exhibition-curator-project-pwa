@@ -2,13 +2,12 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 
-import { NormalizedArtwork } from "../../types/artwork";
-
 import CustomSelect, { Option } from "@/components/CustomSelect";
 import { SingleValue } from "react-select";
 import { useRouter, useSearchParams } from "next/navigation";
 import Gallery from "@/components/Gallery";
 import Pagination from "@/components/Pagination";
+import { NormalizedArtwork } from "@/types/artwork";
 
 interface ApiResponse {
   artworks: NormalizedArtwork[];

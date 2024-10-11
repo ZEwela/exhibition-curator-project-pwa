@@ -1,8 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { NormalizedArtwork } from "../types/artwork";
+
 import Modal from "react-modal";
+import { NormalizedArtwork } from "@/types/artwork";
 
 interface GalleryProps {
   artworks: NormalizedArtwork[];
