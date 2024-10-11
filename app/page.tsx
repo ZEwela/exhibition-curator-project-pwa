@@ -1,6 +1,6 @@
 "use client";
 
-import { Chip } from "@/components/Chip";
+import { Chip } from "@/app/components/Chip";
 import { useEffect, useState } from "react";
 
 export default function Home() {

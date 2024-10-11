@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 
-import CustomSelect, { Option } from "@/components/CustomSelect";
+import CustomSelect, { Option } from "@/app/components/CustomSelect";
 import { SingleValue } from "react-select";
 import { useRouter, useSearchParams } from "next/navigation";
-import Gallery from "@/components/Gallery";
-import Pagination from "@/components/Pagination";
+import Gallery from "@/app/components/Gallery";
+import Pagination from "@/app/components/Pagination";
 import { NormalizedArtwork } from "@/types/artwork";
 
 interface ApiResponse {
