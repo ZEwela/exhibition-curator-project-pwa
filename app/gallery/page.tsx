@@ -103,7 +103,7 @@ const GalleryPage: React.FC = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex flex-col items-center p-8">
+    <div className="container mx-auto p-8">
       <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-8">
         Art Gallery
       </h1>
@@ -115,7 +115,7 @@ const GalleryPage: React.FC = () => {
         >
           <input
             type="text"
-            placeholder="Search by title or artist"
+            placeholder="Search by title, artist or keyword"
             value={searchTerm}
             onChange={handleSearchChange}
             className="w-full px-4 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
@@ -138,17 +138,16 @@ const GalleryPage: React.FC = () => {
           onChange={handleSortChange}
         />
       </div>
-      <div className="container mx-auto p-8">
-        <Gallery artworks={artworks} />
 
-        <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={(newPage) =>
-            updateQueryParams({ page: newPage.toString() })
-          }
-        />
-      </div>
+      <Gallery artworks={artworks} />
+
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={(newPage) =>
+          updateQueryParams({ page: newPage.toString() })
+        }
+      />
     </div>
   );
 };
