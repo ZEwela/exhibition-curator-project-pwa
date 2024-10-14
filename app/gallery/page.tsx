@@ -138,16 +138,17 @@ const GalleryPage: React.FC = () => {
           onChange={handleSortChange}
         />
       </div>
+      <div className="container mx-auto p-8">
+        <Gallery artworks={artworks} />
 
-      <Gallery artworks={artworks} />
-
-      <Pagination
-        currentPage={page}
-        totalPages={totalPages}
-        onPageChange={(newPage) =>
-          updateQueryParams({ page: newPage.toString() })
-        }
-      />
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={(newPage) =>
+            updateQueryParams({ page: newPage.toString() })
+          }
+        />
+      </div>
     </div>
   );
 };
