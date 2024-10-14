@@ -1,7 +1,7 @@
 "use client";
 import { useState, type FC } from "react";
-
 import cx from "classnames";
+
 interface Props {
   label: string;
   onClick?: (selected: boolean) => void;
@@ -27,20 +27,16 @@ export const Chip: FC<Props> = ({
   };
 
   const buttonClasses = cx(
-    "rounded-md w-fit px-4 py-2 text-sm font-medium transition-colors",
+    "rounded-md w-fit px-4 py-2 text-sm font-medium transition-colors duration-200 ease-in-out",
     selected
-      ? "bg-gray-800 text-white dark:bg-gray-200 dark:text-black"
-      : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300",
-    "hover:bg-gray-400 dark:hover:bg-gray-700",
+      ? "bg-indigo-600 text-white dark:bg-indigo-400 dark:text-black"
+      : "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
+    "hover:bg-indigo-500 hover:text-white dark:hover:bg-indigo-500 dark:hover:text-white",
     className
   );
 
   return (
-    <button
-      type={type}
-      onClick={handleClick}
-      className={`${buttonClasses}  ${className}`}
-    >
+    <button type={type} onClick={handleClick} className={buttonClasses}>
       {label}
     </button>
   );

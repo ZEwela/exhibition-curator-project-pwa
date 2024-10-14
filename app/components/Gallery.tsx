@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-
 import Modal from "react-modal";
 import { NormalizedArtwork } from "@/types/artwork";
 import { useExhibition } from "../contexts/ExhibitionContext";
+import ArtworkDetails from "./ArtworkDetails";
 
 interface GalleryProps {
   artworks: NormalizedArtwork[];
@@ -51,11 +51,11 @@ const Gallery: React.FC<GalleryProps> = ({ artworks }) => {
 
   return (
     <>
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4 p-5">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6 ">
         {artworks.map((art) => (
           <div
             key={art.id}
-            className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md cursor-pointer transition-transform transform hover:-translate-y-1"
+            className="bg-white dark:bg-gray-700 rounded-lg overflow-hidden shadow-lg cursor-pointer transition-transform transform hover:-translate-y-1 hover:shadow-xl"
           >
             <div onClick={() => openModal(art)}>
               {art.image ? (
@@ -78,16 +78,16 @@ const Gallery: React.FC<GalleryProps> = ({ artworks }) => {
                 />
               )}
               <div className="p-4">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                   {art.title}
                 </h2>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-gray-700 dark:text-gray-300">
                   <strong>Artist:</strong> {art.artist}
                 </p>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-gray-700 dark:text-gray-300">
                   <strong>Medium:</strong> {art.medium}
                 </p>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-gray-700 dark:text-gray-300">
                   <strong>Date:</strong> {art.date}
                 </p>
               </div>
@@ -95,15 +95,22 @@ const Gallery: React.FC<GalleryProps> = ({ artworks }) => {
             <div className="px-4 pb-4">
               <button
                 onClick={() => toggleExhibition(art)}
-                className={`w-full py-2 rounded transition-colors ${
+                className={`w-full py-3 rounded-lg transition-colors focus:outline-none focus:ring-4 ${
                   isInExhibition(art.id)
-                    ? "bg-red-500 hover:bg-red-600 text-white"
-                    : "bg-blue-500 hover:bg-blue-600 text-white"
+                    ? "bg-red-600 hover:bg-red-700 text-white shadow-lg focus:ring-red-400"
+                    : "bg-blue-600 hover:bg-blue-700 text-white shadow-lg focus:ring-blue-400"
                 }`}
+                aria-label={
+                  isInExhibition(art.id)
+                    ? "Remove from Exhibition"
+                    : "Add to Exhibition"
+                }
               >
-                {isInExhibition(art.id)
-                  ? "Remove from Exhibition"
-                  : "Add to Exhibition"}
+                <span className="font-semibold text-lg">
+                  {isInExhibition(art.id)
+                    ? "Remove from Exhibition"
+                    : "Add to Exhibition"}
+                </span>
               </button>
             </div>
           </div>
@@ -115,74 +122,18 @@ const Gallery: React.FC<GalleryProps> = ({ artworks }) => {
           isOpen={modalIsOpen}
           onRequestClose={closeModal}
           contentLabel="Artwork Details"
-          className="relative bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-lg w-full max-w-lg sm:max-w-3xl mx-auto my-8 max-h-[90vh] overflow-y-auto"
+          className="relative bg-white dark:bg-gray-900 p-6 sm:p-8 rounded-lg w-full max-w-lg sm:max-w-3xl mx-auto my-8 max-h-[90vh] overflow-y-auto shadow-lg"
           overlayClassName="fixed top-0 left-0 w-full h-full bg-black bg-opacity-75 flex items-center justify-center"
           ariaHideApp={false}
         >
           <button
             onClick={closeModal}
-            className="absolute top-4 right-6 text-2xl sm:text-4xl font-bold text-gray-600 dark:text-gray-300 cursor-pointer focus:outline-none"
+            className="absolute top-4 right-6 text-3xl sm:text-4xl font-bold text-gray-600 dark:text-gray-200 cursor-pointer focus:outline-none hover:text-gray-800 dark:hover:text-gray-300 transition-colors duration-200"
           >
             &times;
           </button>
           <div className="text-center">
-            {selectedArt.image ? (
-              <Image
-                src={selectedArt.image}
-                alt={selectedArt.title}
-                width={600}
-                height={600}
-                className="mx-auto w-full h-auto max-w-sm sm:max-w-md object-contain"
-              />
-            ) : (
-              <Image
-                src="/placeholder.png"
-                alt="Placeholder"
-                width={600}
-                height={600}
-                className="mx-auto w-full h-auto max-w-sm sm:max-w-md object-contain"
-              />
-            )}
-            <h2 className="text-lg sm:text-2xl font-semibold text-gray-900 dark:text-white mt-4">
-              {selectedArt.title}
-            </h2>
-            <div className="mt-4 text-left text-gray-700 dark:text-gray-400">
-              <p>
-                <strong>Artist:</strong> {selectedArt.artist}
-              </p>
-              <p>
-                <strong>Medium:</strong> {selectedArt.medium}
-              </p>
-              <p>
-                <strong>Type:</strong> {selectedArt.type}
-              </p>
-              <p>
-                <strong>Date:</strong> {selectedArt.date}
-              </p>
-              <p>
-                <strong>Department:</strong> {selectedArt.department}
-              </p>
-              <p>
-                <strong>Culture:</strong> {selectedArt.culture}
-              </p>
-              <p>
-                <strong>Creditline:</strong> {selectedArt.creditline}
-              </p>
-              <p>
-                <strong>Description:</strong> {selectedArt.description}
-              </p>
-              <p>
-                <strong>Source:</strong> {selectedArt.source}{" "}
-                <a
-                  href={selectedArt.source_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 dark:text-blue-400 hover:underline"
-                >
-                  Check details
-                </a>
-              </p>
-            </div>
+            <ArtworkDetails artwork={selectedArt} />
           </div>
         </Modal>
       )}

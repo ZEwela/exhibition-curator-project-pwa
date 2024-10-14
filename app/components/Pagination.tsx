@@ -25,7 +25,6 @@ const Pagination: React.FC<PaginationProps> = ({
   for (let i = start; i <= end; i++) {
     pages.push(i);
   }
-  console.log(pages, currentPage, totalPages);
   return (
     <div className="flex justify-center gap-2 my-5">
       <button

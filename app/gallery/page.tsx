@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, Suspense } from "react";
+import { FaSpinner, FaExclamationTriangle } from "react-icons/fa";
 
 import CustomSelect, { Option } from "@/app/components/CustomSelect";
 import { SingleValue } from "react-select";
@@ -8,6 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Gallery from "@/app/components/Gallery";
 import Pagination from "@/app/components/Pagination";
 import { NormalizedArtwork } from "@/types/artwork";
+import { useTheme } from "../components/ThemeProvider";
 
 interface ApiResponse {
   artworks: NormalizedArtwork[];
@@ -19,6 +21,7 @@ interface ApiResponse {
 const GalleryPage: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { theme } = useTheme();
 
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [artworks, setArtworks] = useState<NormalizedArtwork[]>([]);
@@ -54,11 +57,12 @@ const GalleryPage: React.FC = () => {
       } catch (err) {
         if (err instanceof Error) {
           console.error("Error fetching artworks:", err);
-          setError(err.message);
         } else {
           console.error("Unknown error fetching artworks:", err);
-          setError("Failed to fetch artworks.");
         }
+        setError(
+          "Oops! Something went wrong while fetching artworks. Please try again"
+        );
       } finally {
         setLoading(false);
       }
@@ -98,9 +102,31 @@ const GalleryPage: React.FC = () => {
     });
     router.push(`?${updatedParams.toString()}`);
   };
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="flex flex-col items-center p-4 bg-blue-100 dark:bg-blue-800 rounded-lg shadow-md text-blue-800 dark:text-blue-100">
+          <FaSpinner className="animate-spin text-4xl mb-2" />
+          <p className="text-lg font-semibold">Loading artwork details...</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            Please wait a moment while we fetch the information.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="flex flex-col items-center p-4 bg-red-100 dark:bg-red-800 rounded-lg shadow-md text-red-800 dark:text-red-100">
+          <FaExclamationTriangle className="text-4xl mb-2" />
+          <p className="text-lg font-semibold">Error fetching artworks!</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-8">
@@ -111,15 +137,25 @@ const GalleryPage: React.FC = () => {
       <div className="flex flex-wrap gap-4 justify-center mb-8 w-full">
         <form
           onSubmit={handleSearchSubmit}
-          className="flex-1 min-w-[250px] max-w-[400px]"
+          className="flex items-center justify-center min-w-[250px] max-w-[400px] "
         >
+          <label htmlFor="search" className="sr-only">
+            Search by keyword
+          </label>
           <input
             type="text"
-            placeholder="Search by title, artist or keyword"
+            id="search"
+            placeholder="Search by keyword"
             value={searchTerm}
             onChange={handleSearchChange}
-            className="w-full px-4 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+            className="flex-1 px-4 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
           />
+          <button
+            type="submit"
+            className="ml-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:text-white dark:focus:ring-indigo-300"
+          >
+            Search
+          </button>
         </form>
 
         <CustomSelect
@@ -136,6 +172,7 @@ const GalleryPage: React.FC = () => {
             }`,
           }}
           onChange={handleSortChange}
+          theme={theme}
         />
       </div>
 

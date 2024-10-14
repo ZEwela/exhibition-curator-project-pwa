@@ -44,18 +44,19 @@ export default function Home() {
   };
 
   return (
-    <div className="grid grid-rows-[auto_1fr_auto] items-center justify-items-center min-h-screen p-8 pb-20 sm:p-20 gap-16 font-geist">
-      <div className="flex flex-col gap-8 items-center sm:items-start w-full max-w-md">
+    <div className="flex flex-col items-center justify-center min-h-screen p-8 pb-20 sm:p-20 gap-16 font-geist">
+      <div className="flex flex-col gap-8 items-center w-full ">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
           Exhibition Curator
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300">Hello You</p>
-
-        <div className="flex flex-col gap-7 w-full h-[512px] items-center overflow-y-scroll scrollbar-hide">
+        <p className="text-lg text-gray-600 dark:text-gray-300">
+          Welcome, Art Enthusiast!
+        </p>
+        <p className="text-base text-gray-700 dark:text-gray-400">
+          Select from categories or go straight to the gallery to see all works:
+        </p>
+        <div className="flex flex-col gap-7 w-full  items-center overflow-y-scroll scrollbar-hide">
           <div className="flex flex-col gap-7 px-4 py-5 w-full items-start">
-            <p className="text-base text-gray-700 dark:text-gray-400">
-              Select from categories or go straight to gallery to see all works:
-            </p>
             <div className="flex flex-wrap gap-2">
               {classifications.map((category, index) => (
                 <Chip

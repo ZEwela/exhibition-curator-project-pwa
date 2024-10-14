@@ -45,8 +45,12 @@ async function fetchClevelandArtworks(
 
   let allArtworks: NormalizedArtwork[] = [];
   let totalArtworks = 0;
-
-  if (fetchParams.classifications && fetchParams.classifications.length > 0) {
+  console.log(fetchParams.classifications);
+  if (
+    fetchParams.classifications &&
+    fetchParams.classifications.length > 0 &&
+    fetchParams.classifications[0] !== ""
+  ) {
     const types = fetchParams.classifications.flatMap((c) => c.split("|"));
     for (const type of types) {
       const response = await clevelandAxios.get("", {
@@ -224,7 +228,6 @@ export async function GET(request: Request) {
       classifications,
     };
     const { artworks, total } = await fetchCombinedArtworks(fetchParams);
-
     const totalPages = Math.ceil(total / ARTWORKS_PER_PAGE);
 
     return NextResponse.json(
