@@ -70,7 +70,7 @@ const fetchArtworks = async <T>(
       artworks: artworks
         .map(normalizeFunction)
         .filter((art: NormalizedArtwork | null) => art !== null),
-      total: response.data.info.total || response.data.info.totalrecords,
+      total: response.data.info?.total || response.data.info?.totalrecords || 0,
     };
   } catch (error) {
     console.error(`Error fetching artworks:`, error);
@@ -121,9 +121,12 @@ const fetchCombinedArtworks = async (
     }
   }
 
+  const clevelandTotal = clevelandResponse.total || 0;
+  const harvardTotal = harvardResponse.total || 0;
+  const total = clevelandTotal + harvardTotal;
   return {
     artworks: combinedArtworks,
-    total: clevelandResponse.total + harvardResponse.total,
+    total: total,
   };
 };
 
@@ -151,6 +154,7 @@ export async function GET(request: Request) {
       classifications,
     };
     const { artworks, total } = await fetchCombinedArtworks(fetchParams);
+
     const totalPages = Math.ceil(total / ARTWORKS_PER_PAGE);
 
     return NextResponse.json(
