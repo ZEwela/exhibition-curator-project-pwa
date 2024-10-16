@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, Suspense } from "react";
-import { FaSpinner, FaExclamationTriangle } from "react-icons/fa";
 
 import CustomSelect, { Option } from "@/app/components/CustomSelect";
 import { SingleValue } from "react-select";
@@ -10,6 +9,8 @@ import Gallery from "@/app/components/Gallery";
 import Pagination from "@/app/components/Pagination";
 import { NormalizedArtwork } from "@/types/artwork";
 import { useTheme } from "../components/ThemeProvider";
+import { Loading } from "../components/Loading";
+import { ErrorComponent } from "../components/ErrorComponent";
 
 interface ApiResponse {
   artworks: NormalizedArtwork[];
@@ -102,30 +103,45 @@ const GalleryPage: React.FC = () => {
     });
     router.push(`?${updatedParams.toString()}`);
   };
+
+  const [loadingText, setLoadingText] = useState<string>(
+    "Please wait a moment while we fetch the information."
+  );
+
+  const textToDisplayWhileLoading: string[] = [
+    "Please wait a moment while we fetch the information.",
+    "Collecting art...",
+    "Getting ready...",
+  ];
+  useEffect(() => {
+    let textIndex = 0;
+    let intervalId: NodeJS.Timeout | undefined;
+
+    if (loading) {
+      intervalId = setInterval(() => {
+        setLoadingText(textToDisplayWhileLoading[textIndex]);
+        textIndex = (textIndex + 1) % textToDisplayWhileLoading.length;
+      }, 3000);
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [loading]);
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="flex flex-col items-center p-4 bg-blue-100 dark:bg-blue-800 rounded-lg shadow-md text-blue-800 dark:text-blue-100">
-          <FaSpinner className="animate-spin text-4xl mb-2" />
-          <p className="text-lg font-semibold">Loading artwork details...</p>
-          <p className="text-sm text-gray-600 dark:text-gray-300">
-            Please wait a moment while we fetch the information.
-          </p>
-        </div>
-      </div>
+      <Loading
+        loadingTitle={"Loading artwork details..."}
+        loadingText={loadingText}
+      />
     );
   }
 
   if (error) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="flex flex-col items-center p-4 bg-red-100 dark:bg-red-800 rounded-lg shadow-md text-red-800 dark:text-red-100">
-          <FaExclamationTriangle className="text-4xl mb-2" />
-          <p className="text-lg font-semibold">Error fetching artworks!</p>
-          <p className="text-sm text-gray-600 dark:text-gray-300">{error}</p>
-        </div>
-      </div>
-    );
+    return <ErrorComponent />;
   }
 
   return (

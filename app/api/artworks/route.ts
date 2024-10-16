@@ -45,7 +45,6 @@ async function fetchClevelandArtworks(
 
   let allArtworks: NormalizedArtwork[] = [];
   let totalArtworks = 0;
-  console.log(fetchParams.classifications);
   if (
     fetchParams.classifications &&
     fetchParams.classifications.length > 0 &&
