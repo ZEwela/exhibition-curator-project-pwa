@@ -28,7 +28,6 @@ const customStyles = (
 ): StylesConfig<Option, false> => ({
   control: (provided) => ({
     ...provided,
-    padding: "0.5rem",
     minWidth: "250px",
     maxWidth: "400px",
     borderRadius: "0.375rem",

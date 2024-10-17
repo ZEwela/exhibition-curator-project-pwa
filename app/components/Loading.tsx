@@ -16,7 +16,7 @@ export const Loading: React.FC<{
           {loadingText}
         </p>
         <p className="text-sm text-gray-500 dark:text-gray-300 italic text-center">
-          Please hold on, we're curating the best for you...
+          Please hold on, we&apos;re curating the best for you...
         </p>
       </div>
     </div>

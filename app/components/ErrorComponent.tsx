@@ -14,7 +14,8 @@ export const ErrorComponent = () => {
           Oops, something went wrong!
         </h2>
         <p className="text-base text-gray-600 dark:text-gray-400 text-center mb-5">
-          We encountered an issue. Don't worry, you can try refreshing the page.
+          We encountered an issue. Don&apos;t worry, you can try refreshing the
+          page.
         </p>
         <button
           onClick={handleRefresh}

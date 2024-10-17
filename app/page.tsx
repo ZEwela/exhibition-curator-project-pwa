@@ -1,9 +1,11 @@
 "use client";
 
 import { Chip } from "@/app/components/Chip";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 export default function Home() {
+  const router = useRouter();
   const [preferences, setPreferences] = useState<string[]>([]);
 
   const [classifications, setClassifications] = useState<string[]>([]);
@@ -24,6 +26,10 @@ export default function Home() {
 
     fetchClassifications();
   }, []);
+  const memoizedClassifications = useMemo(
+    () => classifications,
+    [classifications]
+  );
 
   const handleChipClick = (label: string, selected: boolean) => {
     setPreferences((prev) =>
@@ -37,7 +43,7 @@ export default function Home() {
         classifications: preferences.join("|"),
       }).toString();
 
-      window.location.href = `/gallery?${queryParams}`;
+      router.push(`/gallery?${queryParams}`);
     } catch (error) {
       console.error("Error navigating to gallery:", error);
     }
@@ -58,7 +64,7 @@ export default function Home() {
         <div className="flex flex-col gap-7 w-full  items-center overflow-y-scroll scrollbar-hide">
           <div className="flex flex-col gap-7 px-4 py-5 w-full items-start">
             <div className="flex flex-wrap gap-2">
-              {classifications.map((category, index) => (
+              {memoizedClassifications.map((category, index) => (
                 <Chip
                   key={index}
                   label={category}
