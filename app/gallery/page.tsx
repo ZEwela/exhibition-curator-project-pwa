@@ -95,14 +95,12 @@ const GalleryPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-8">
-      <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-8">
-        Art Gallery
-      </h1>
+      <h1 className="text-3xl font-bold mb-8">Gallery</h1>
 
       <div className="flex flex-col items-center gap-6 mb-8 w-full">
         <form
           onSubmit={handleSearchSubmit}
-          className="flex items-center justify-center w-full max-w-lg bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md transition-shadow duration-300 ease-in-out"
+          className="flex flex-col sm:flex-row items-center justify-between w-full max-w-lg bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md transition-shadow duration-300 ease-in-out"
         >
           <label htmlFor="search" className="sr-only">
             Search by keyword
@@ -113,22 +111,24 @@ const GalleryPage: React.FC = () => {
             placeholder="Search by keyword"
             value={searchTerm}
             onChange={handleSearchChange}
-            className="flex-1 px-4 py-2 text-base border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow duration-200"
+            className="flex-1 px-4 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow duration-200"
           />
-          <button
-            type="submit"
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-indigo-500 dark:hover:bg-indigo-600"
-          >
-            Search
-          </button>
-          <button
-            type="button"
-            onClick={handleClearSearch}
-            className="ml-2 px-2 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-400 dark:bg-red-500 dark:hover:bg-red-600"
-            aria-label="Clear Search"
-          >
-            Clear
-          </button>
+          <div className="flex mt-2 sm:mt-0 sm:ml-2">
+            <button
+              type="submit"
+              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-indigo-500 dark:hover:bg-indigo-600"
+            >
+              Search
+            </button>
+            <button
+              type="button"
+              onClick={handleClearSearch}
+              className="ml-2 px-2 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-400 dark:bg-red-500 dark:hover:bg-red-600"
+              aria-label="Clear Search"
+            >
+              Clear
+            </button>
+          </div>
         </form>
 
         <CustomSelect

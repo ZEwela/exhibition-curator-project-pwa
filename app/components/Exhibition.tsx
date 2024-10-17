@@ -6,6 +6,7 @@ import { NormalizedArtwork } from "@/types/artwork";
 import ArtworkDetails from "./ArtworkDetails";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Pagination from "./Pagination";
+import Link from "next/link";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -50,9 +51,17 @@ const Exhibition: React.FC = () => {
   return (
     <div>
       {exhibitionArtworks.length === 0 ? (
-        <p className="text-gray-600 dark:text-gray-400">
-          Your exhibition is empty. Add some artworks!
-        </p>
+        <div className="flex items-center justify-center flex-col gap-5">
+          <p className="text-gray-600 dark:text-gray-400">
+            Your exhibition is empty. Add some artworks!
+          </p>
+          <Link
+            href="/gallery"
+            className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-full shadow-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-400 transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-400 dark:focus:ring-blue-300"
+          >
+            Go to Gallery
+          </Link>
+        </div>
       ) : (
         <div>
           <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
