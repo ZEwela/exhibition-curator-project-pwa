@@ -39,6 +39,12 @@
       "form_factor": "narrow"
     },
     {
+      "src": "/screenshots/mobile-gallery.png",
+      "sizes": "320x640",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
       "src": "/screenshots/mobile-exhibition.png",
       "sizes": "320x640",
       "type": "image/png",
@@ -46,6 +52,12 @@
     },
     {
       "src": "/screenshots/desktop-home.png",
+      "sizes": "1440x900",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshots/desktop-gallery.png",
       "sizes": "1440x900",
       "type": "image/png",
       "form_factor": "wide"
