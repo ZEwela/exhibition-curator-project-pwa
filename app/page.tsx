@@ -2,34 +2,22 @@
 
 import { Chip } from "@/app/components/Chip";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import useSWR from "swr";
+import { useState } from "react";
+
+// Fetcher function for SWR
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Home() {
   const router = useRouter();
   const [preferences, setPreferences] = useState<string[]>([]);
 
-  const [classifications, setClassifications] = useState<string[]>([]);
-
-  useEffect(() => {
-    const fetchClassifications = async () => {
-      try {
-        const response = await fetch("/api/classification");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data: string[] = await response.json();
-        setClassifications(data);
-      } catch (error) {
-        console.error("Error fetching classifications:", error);
-      }
-    };
-
-    fetchClassifications();
-  }, []);
-  const memoizedClassifications = useMemo(
-    () => classifications,
-    [classifications]
-  );
+  // Use SWR to fetch classifications from API
+  const {
+    data: classifications,
+    error,
+    isLoading,
+  } = useSWR<string[]>("/api/classification", fetcher);
 
   const handleChipClick = (label: string, selected: boolean) => {
     setPreferences((prev) =>
@@ -51,7 +39,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 pb-20 sm:p-20 gap-16 font-geist">
-      <div className="flex flex-col gap-8 items-center w-full ">
+      <div className="flex flex-col gap-8 items-center w-full">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
           Exhibition Curator
         </h1>
@@ -61,10 +49,20 @@ export default function Home() {
         <p className="text-base text-gray-700 dark:text-gray-400">
           Select from categories or go straight to the gallery to see all works:
         </p>
-        <div className="flex flex-col gap-7 w-full  items-center overflow-y-scroll scrollbar-hide">
+        <div className="flex flex-col gap-7 w-full items-center overflow-y-scroll scrollbar-hide">
+          {error && (
+            <div className=" flex  items-center justify-center">
+              Sorry, something went wrong.
+            </div>
+          )}
+          {isLoading && (
+            <div className=" flex  items-center justify-center">
+              Loading classifications...
+            </div>
+          )}
           <div className="flex flex-col gap-7 px-4 py-5 w-full items-start">
             <div className="flex flex-wrap gap-2">
-              {memoizedClassifications.map((category, index) => (
+              {classifications?.map((category, index) => (
                 <Chip
                   key={index}
                   label={category}
