@@ -4,15 +4,15 @@ import { Chip } from "@/app/components/Chip";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { useState } from "react";
+import { Loading } from "./components/Loading";
+import { ErrorComponent } from "./components/ErrorComponent";
 
-// Fetcher function for SWR
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Home() {
   const router = useRouter();
   const [preferences, setPreferences] = useState<string[]>([]);
 
-  // Use SWR to fetch classifications from API
   const {
     data: classifications,
     error,
@@ -49,37 +49,41 @@ export default function Home() {
         <p className="text-base text-gray-700 dark:text-gray-400">
           Select from categories or go straight to the gallery to see all works:
         </p>
-        <div className="flex flex-col gap-7 w-full items-center overflow-y-scroll scrollbar-hide">
-          {error && (
-            <div className=" flex  items-center justify-center">
-              Sorry, something went wrong.
-            </div>
-          )}
-          {isLoading && (
-            <div className=" flex  items-center justify-center">
-              Loading classifications...
-            </div>
-          )}
-          <div className="flex flex-col gap-7 px-4 py-5 w-full items-start">
-            <div className="flex flex-wrap gap-2">
-              {classifications?.map((category, index) => (
-                <Chip
-                  key={index}
-                  label={category}
-                  onClick={(selected) => handleChipClick(category, selected)}
-                />
-              ))}
+
+        {error || isLoading ? (
+          <div className="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl rounded-3xl shadow-2xl relative overflow-hidden h-96 flex justify-center items-center">
+            {error && !isLoading && <ErrorComponent />}
+            {isLoading && !error && (
+              <Loading
+                loadingTitle={"Preparing categories"}
+                loadingText={"Adjusting categories for you"}
+              />
+            )}
+          </div>
+        ) : !isLoading && !error ? (
+          <div className="flex flex-col gap-7 w-full items-center overflow-y-scroll scrollbar-hide">
+            <div className="flex flex-col gap-7 px-4 py-5 w-full items-start">
+              <div className="flex flex-wrap gap-2 justify-center">
+                {classifications?.map((category, index) => (
+                  <Chip
+                    key={index}
+                    label={category}
+                    onClick={(selected) => handleChipClick(category, selected)}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-
-        <button
-          onClick={() => handleNavigation()}
-          className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 dark:bg-gray-200 dark:text-gray-800 dark:hover:bg-gray-300 transition-colors"
-        >
-          Go to Gallery
-        </button>
+        ) : (
+          ""
+        )}
       </div>
+      <button
+        onClick={() => handleNavigation()}
+        className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 dark:bg-gray-200 dark:text-gray-800 dark:hover:bg-gray-300 transition-colors"
+      >
+        Go to Gallery
+      </button>
     </div>
   );
 }

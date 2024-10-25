@@ -4,7 +4,6 @@ export interface NormalizedArtwork {
   artist: string;
   date: string | null;
   medium: string | null;
-  dimensions: string | null;
   department: string | null;
   culture: string | null;
   image: string | null;
@@ -22,17 +21,6 @@ export interface ClevelandArtResponse {
   creation_date: string;
   creators: [{ description: string }];
   technique: string;
-  dimensions: {
-    framed?: {
-      height: number;
-      width: number;
-      depth?: number;
-    };
-    unframed?: {
-      height: number;
-      width: number;
-    };
-  };
   department: string;
   culture: string[];
   current_location: string;

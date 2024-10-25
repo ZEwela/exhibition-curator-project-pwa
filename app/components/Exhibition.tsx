@@ -47,7 +47,7 @@ const Exhibition: React.FC = () => {
     setCurrentPage(page);
     window.scrollTo(0, 0);
   };
-
+  console.log(selectedArt);
   return (
     <div>
       {exhibitionArtworks.length === 0 ? (

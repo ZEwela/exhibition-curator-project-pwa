@@ -1,20 +1,31 @@
 import { NormalizedArtwork } from "@/types/artwork";
 import Image from "next/image";
 import ShareOptions from "./ShareOptions";
+import { useState } from "react";
 
 const ArtworkDetails: React.FC<{ artwork: NormalizedArtwork }> = ({
   artwork,
 }) => {
+  const [loading, setLoading] = useState(true);
   return (
     <div className="text-center max-w-2xl mx-auto px-4">
       {artwork.image ? (
-        <Image
-          src={artwork.image}
-          alt={artwork.title}
-          width={600}
-          height={600}
-          className="mx-auto w-full h-auto max-w-sm sm:max-w-md object-contain rounded-lg shadow-lg"
-        />
+        <div className="relative">
+          {loading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-800 rounded-lg">
+              <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+            </div>
+          )}
+          <Image
+            src={artwork.image}
+            alt={artwork.title}
+            width={600}
+            height={600}
+            className="mx-auto w-full h-auto max-w-sm sm:max-w-md object-contain rounded-lg shadow-lg"
+            priority
+            onLoad={() => setLoading(false)}
+          />
+        </div>
       ) : (
         <Image
           src="/placeholderWithText.png"

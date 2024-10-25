@@ -12,14 +12,6 @@ import {
 export const normalizeClevelandArt = (
   data: ClevelandArtResponse
 ): NormalizedArtwork => {
-  const dimensions = data.dimensions.framed
-    ? `${data.dimensions.framed.height} x ${data.dimensions.framed.width} x ${
-        data.dimensions.framed.depth || ""
-      } m (Framed)`
-    : data.dimensions.unframed
-    ? `${data.dimensions.unframed.height} x ${data.dimensions.unframed.width} m (Unframed)`
-    : null;
-
   const artists =
     data.creators?.map((creator) => creator.description).join(", ") ||
     "Unknown";
@@ -30,15 +22,15 @@ export const normalizeClevelandArt = (
     artist: artists,
     date: data.creation_date || null,
     medium: data.technique || null,
-    dimensions: dimensions,
     department: data.department || null,
     culture: data.culture?.join(", ") || null,
-    image: data.images?.web?.url || null, // Assuming image_url exists
+    image: data.images?.web?.url || null,
     location: data.current_location || null,
     creditline: data.tombstone || null,
     description: data.description || "",
     type: data.type,
     source_url: data.url,
+
     source: "Cleveland Museum of Art",
   };
 };
@@ -53,9 +45,6 @@ export const normalizeHarvardArt = (
 ): NormalizedArtwork => {
   const artists =
     data.people?.map((person) => person.name).join(", ") || "Unknown";
-  const dimensions = data.dated
-    ? `${data.datebegin || ""} - ${data.dateend || ""}`
-    : null;
 
   return {
     id: `harvard-${data.id}`,
@@ -63,11 +52,10 @@ export const normalizeHarvardArt = (
     artist: artists,
     date: data.dated || null,
     medium: data.medium || null,
-    dimensions: dimensions,
     department: data.department || null,
     culture: data.culture || null,
     image: data.primaryimageurl || null,
-    location: null, // Harvard API doesn't provide location
+    location: null,
     creditline: data.creditline || null,
     description: data.description || "",
     type: data.classification,

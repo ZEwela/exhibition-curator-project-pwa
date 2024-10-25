@@ -7,10 +7,6 @@ const Navbar = () => {
   return (
     <nav className="flex items-center justify-between p-4 md:px-20 bg-gray-100 dark:bg-gray-800">
       <div className="flex items-center">
-        <Link
-          href="/"
-          className="text-xl font-bold text-gray-800 dark:text-white"
-        ></Link>
         <Link href="/" className="flex-shrink-0">
           <Image
             src="/web-app-manifest-192x192.png"

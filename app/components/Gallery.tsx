@@ -14,6 +14,7 @@ interface GalleryProps {
 }
 
 const Gallery: React.FC<GalleryProps> = ({ artworks, totalPages }) => {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [selectedArt, setSelectedArt] = useState<NormalizedArtwork | null>(
     null
@@ -31,15 +32,19 @@ const Gallery: React.FC<GalleryProps> = ({ artworks, totalPages }) => {
 
   useEffect(() => {
     const artworkId = searchParams.get("artwork");
-    if (artworkId) {
-      const artwork = artworks.find((art) => art.id === artworkId);
-      if (artwork) {
-        setSelectedArt(artwork);
-        setModalIsOpen(true);
-      }
+    const artwork = artworks.find((art) => art.id === artworkId);
+    if (artwork) {
+      setSelectedArt(artwork);
+      setModalIsOpen(true);
+      setErrorMessage(null); // Reset error message if artwork is found
+    } else if (artworkId) {
+      setErrorMessage("Artwork not found."); // Set error message if artwork is not found
+      setModalIsOpen(false);
+      setSelectedArt(null);
     } else {
       setModalIsOpen(false);
       setSelectedArt(null);
+      setErrorMessage(null); // Reset error message if no artwork is selected
     }
   }, [searchParams, artworks]);
 
@@ -97,6 +102,11 @@ const Gallery: React.FC<GalleryProps> = ({ artworks, totalPages }) => {
 
   return (
     <>
+      {errorMessage && (
+        <div className="flex justify-center p-4">
+          <p className="text-red-600">{errorMessage}</p>
+        </div>
+      )}
       <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6">
         {artworks.map((art) => (
           <div
