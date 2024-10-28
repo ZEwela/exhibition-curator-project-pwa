@@ -8,6 +8,20 @@
 
 You can view the live version of the Exhibition Curator app here: [Exhibition Curator Live](https://exhibition-curator-project-pwa.vercel.app/)
 
+## PWA Installation Instructions
+
+This app is a Progressive Web App (PWA), which means you can install it directly on your device for an enhanced experience, similar to a native application.
+
+You can install this app on your device by following these steps:
+
+1. Open the app in your browser.
+2. Look for the install prompt or the option in your browser's menu.
+3. Follow the instructions to add the app to your device.
+
+For detailed instructions on how to install PWAs on different devices, please refer to the following link:
+
+[How to Install a PWA to Your Device](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Installing)
+
 ## Table of Contents
 
 - [Features](#features)
@@ -37,7 +51,7 @@ Make sure you have the following installed:
 - **npm** (comes with Node.js)
 - Alternatively, you can use **Yarn**, **pnpm**, or **bun** as your package manager.
 
-### Installation
+## Installation
 
 1. Clone the repository:
 
@@ -77,7 +91,7 @@ Make sure you have the following installed:
    bun install
    ```
 
-### Setup Environment Variables
+## Setup Environment Variables
 
 To access the Harvard Art Museums API, you need to create a `.env.local` file in the root directory of your project and add your API key.
 
@@ -94,7 +108,7 @@ In the `.env.local` file, add the following line:
 HARVARD_ART_MUSEUMS_API=your_api_key_here
 ```
 
-### Usage
+## Usage
 
 1. Run the development server:
 
@@ -122,6 +136,6 @@ HARVARD_ART_MUSEUMS_API=your_api_key_here
 
 2. Open your browser and navigate to http://localhost:3000 to see the application in action.
 
-### Contributing
+## Contributing
 
 Contributions are welcome! If you'd like to contribute to this project, please fork the repository and submit a pull request. For major changes, please open an issue first to discuss what you would like to change.

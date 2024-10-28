@@ -46,7 +46,7 @@ const GalleryPage: React.FC = () => {
     `/api/artworks?page=${page}&sortBy=${sortBy}&sortOrder=${sortOrder}&search=${search}&classifications=${classifications}`,
     fetcher
   );
-  console.log("Selected Classifications:", selectedClassifications);
+
   const updateQueryParams = (newParams: Record<string, string>) => {
     const updatedParams = new URLSearchParams(searchParams);
     Object.entries(newParams).forEach(([key, value]) => {
