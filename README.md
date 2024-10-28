@@ -13,6 +13,7 @@ You can view the live version of the Exhibition Curator app here: [Exhibition Cu
 - [Features](#features)
 - [Getting Started](#getting-started)
 - [Installation](#installation)
+- [Setup Environment Variables](#setup-environment-variables)
 - [Usage](#usage)
 - [Contributing](#contributing)
 
@@ -75,6 +76,23 @@ Make sure you have the following installed:
    ```bash
    bun install
    ```
+
+### Setup Environment Variables
+
+To access the Harvard Art Museums API, you need to create a `.env.local` file in the root directory of your project and add your API key.
+
+#### Steps to Get the API Key:
+
+1. Visit the [Harvard Art Museums API page](https://harvardartmuseums.org/collections/api) to sign up and get an API key.
+2. Once you have your API key, create a file named `.env.local` in the root directory of your project.
+
+#### Add the API Key to `.env.local`
+
+In the `.env.local` file, add the following line:
+
+```env
+HARVARD_ART_MUSEUMS_API=your_api_key_here
+```
 
 ### Usage
 

@@ -24,9 +24,11 @@ const Exhibition: React.FC = () => {
 
   const openModal = (art: NormalizedArtwork) => {
     setSelectedArt(art);
+
     setModalIsOpen(true);
     const params = new URLSearchParams(searchParams.toString());
     params.set("artwork", art.id);
+
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
@@ -47,7 +49,7 @@ const Exhibition: React.FC = () => {
     setCurrentPage(page);
     window.scrollTo(0, 0);
   };
-  console.log(selectedArt);
+
   return (
     <div>
       {exhibitionArtworks.length === 0 ? (
