@@ -6,6 +6,7 @@ import useSWR from "swr";
 import { useState } from "react";
 import { Loading } from "./components/Loading";
 import { ErrorComponent } from "./components/ErrorComponent";
+import { InstallPrompt } from "./components/InstallPrompt";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -84,6 +85,7 @@ export default function Home() {
       >
         Go to Gallery
       </button>
+      <InstallPrompt />
     </div>
   );
 }
