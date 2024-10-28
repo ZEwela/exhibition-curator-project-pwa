@@ -31,16 +31,22 @@ const GalleryPage: React.FC = () => {
   const sortOrder = (searchParams.get("sortOrder") as "asc" | "desc") || "asc";
   const search = searchParams.get("search") || "";
   const classifications = searchParams.get("classifications") || "";
+  const [selectedClassifications, setSelectedClassifications] = useState<
+    string[]
+  >([]);
 
   useEffect(() => {
     setSearchTerm(search);
-  }, [search]);
+    if (classifications) {
+      setSelectedClassifications(classifications.split("|"));
+    }
+  }, [search, classifications]);
 
   const { data, error, isLoading } = useSWR<ApiResponse>(
     `/api/artworks?page=${page}&sortBy=${sortBy}&sortOrder=${sortOrder}&search=${search}&classifications=${classifications}`,
     fetcher
   );
-
+  console.log("Selected Classifications:", selectedClassifications);
   const updateQueryParams = (newParams: Record<string, string>) => {
     const updatedParams = new URLSearchParams(searchParams);
     Object.entries(newParams).forEach(([key, value]) => {
@@ -78,6 +84,29 @@ const GalleryPage: React.FC = () => {
     }
   };
 
+  const handleGoToHomepage = () => {
+    router.push("/");
+  };
+
+  const handleClearClassification = (classification: string) => {
+    const updatedClassifications = selectedClassifications.filter(
+      (c) => c !== classification
+    );
+    setSelectedClassifications(updatedClassifications);
+    updateQueryParams({
+      classifications:
+        updatedClassifications.length > 0
+          ? updatedClassifications.join("|")
+          : "",
+      page: "1",
+    });
+  };
+
+  const handleClearAllClassifications = () => {
+    setSelectedClassifications([]);
+    updateQueryParams({ classifications: "", page: "1" });
+  };
+
   if (error) {
     return <ErrorComponent />;
   }
@@ -96,6 +125,40 @@ const GalleryPage: React.FC = () => {
   return (
     <div className="container mx-auto p-8">
       <h1 className="text-3xl font-bold mb-8">Gallery</h1>
+
+      <div className="flex  justify-center items-center m-3">
+        {selectedClassifications.length > 0 ? (
+          <div className="mb-4">
+            <h2 className="text-lg font-medium mb-2">
+              Selected Classifications:
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {selectedClassifications.map((classification) => (
+                <span
+                  key={classification}
+                  className="bg-gray-300 dark:bg-gray-800 text-gray-900 dark:text-gray-200 px-4 py-2 rounded-full cursor-pointer shadow transition-transform transform hover:scale-105"
+                  onClick={() => handleClearClassification(classification)}
+                >
+                  {classification} &times;
+                </span>
+              ))}
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200 ease-in-out shadow"
+                onClick={handleClearAllClassifications}
+              >
+                Clear All Classifications
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={handleGoToHomepage}
+            className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200 ease-in-out shadow-lg"
+          >
+            Choose Classifications
+          </button>
+        )}
+      </div>
 
       <div className="flex flex-col items-center gap-6 mb-8 w-full">
         <form
