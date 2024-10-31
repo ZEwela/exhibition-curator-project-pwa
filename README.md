@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Exhibition Curator** is a Next.js application designed to help users curate their own exhibitions by browsing and managing a collection of artworks. The app allows users to search for artworks, add them to their exhibitions, and view detailed information about each piece. This project was bootstrapped with `create-next-app` and utilizes modern React and Next.js features.
+**Exhibition Curator** is a Next.js application designed to help users curate their own exhibitions by browsing and managing a collection of artworks. The app allows users to search for artworks, add them to their exhibitions, and view detailed information about each piece. This project was bootstrapped with `create-next-app` and utilizes modern React and Next.js features.  Additionally, Exhibition Curator integrates with the Harvard Art Museums API and the Cleveland Museum of Art Open Access API to fetch artwork data, providing users with a rich and diverse collection to explore and curate.
 
 ## Live Demo
 
